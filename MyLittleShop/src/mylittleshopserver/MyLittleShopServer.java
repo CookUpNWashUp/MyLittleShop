@@ -97,7 +97,7 @@ public class MyLittleShopServer {
                         + "Connected clients: "
                         + this.clientNumber + ".");
                 out.println("Enter a line with only a 'q' to shutdown"
-                        + "the server\n");
+                        + " the server\n");
 
                 // Get messages from the client, line by line; return them
                 // capitalized
@@ -110,12 +110,13 @@ public class MyLittleShopServer {
                     switch(input){
                         case "q":
                             System.exit(0);
+                            break;
                         case "getproduct":
                             out.println("Specify the id");
                             Integer searchID = Integer.parseInt(in.readLine());
                             out.println(sys.lookup(searchID).toString());
                             break;
-                        /*case "getlog":
+                        case "getlog":
                             out.println("Specify the shop id");
                             ArrayList result = sys.log(in.readLine());
                             out.println(result.size());
@@ -124,7 +125,7 @@ public class MyLittleShopServer {
                                 LogEntry entry = (LogEntry) itr.next();
                                 out.println(entry.toString());
                             }
-                            break;*/
+                            break;
                                 
                     }
                     //out.println(input.toUpperCase());

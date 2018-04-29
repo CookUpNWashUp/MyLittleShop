@@ -58,18 +58,21 @@ public class MyLittleShopClient {
         Scanner scan = new Scanner(System.in);
         while(true){
             String message = scan.nextLine();
+            out.println(message);
             if (message.equals("q")){
-                out.println(message);
+
                 System.exit(0);
-            }else out.println(message);
-            System.out.println(in.readLine() + "\n");
-            /*if (message.equals("getproduct")){
+            }else if (message.equals("getproduct")){
+                System.out.println(in.readLine() + "\n");
+                out.println(scan.nextLine());
                 System.out.println(in.readLine() + "\n");
             }else if (message.equals("getlog")){
+                System.out.println(in.readLine() + "\n");
+                out.println(scan.nextLine());
                 int size = Integer.parseInt(in.readLine());
                 for (int i=0;i<size;i++)
                     System.out.println(in.readLine() + "\n");
-            }*/
+            }
             
         }
     }
