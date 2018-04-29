@@ -2,24 +2,26 @@
  * Free ware. Made as an exercise.
  * These softwares are made really poorly. Use at your discretion
  */
-package mylittleshop;
+package mylittleshopserver;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
+
 
 /**
  * Describes the POS functions of the program.
  * @author Hoang
  * @version 1.0
  */
-public class POS {
+public class Server {
     private final Database shopdb;
     
     /**
      * Constructor method. Establishes the connection to the database.
      * This might be changed in the future to support access control
      */
-    POS(){
+    Server(){
         this.shopdb = new Database("root","root");
         this.shopdb.connect();
     }
@@ -95,20 +97,23 @@ public class POS {
      * a certain kind of object for easy integration with the GUI.
      * Currently supports all shop. Access control will be looked into later
      * @param ShopID The ID of the shop.
+     * @return log An array list of log entries
      */
-    public void log(String ShopID){
+    public ArrayList<LogEntry> log(String ShopID){
         String SQLQuery = "SELECT * FROM shop" + ShopID + "log";
         System.out.println(SQLQuery);
         ResultSet data = shopdb.query(SQLQuery);
+        ArrayList<LogEntry> log = new ArrayList<>();
         try{
             while (data.next()) {
                 int log_id = data.getInt("log_id");
                 int product_id = data.getInt("product_id");
                 Boolean isimport = data.getBoolean("isimport");
-                int n = data.getInt("quantity");
+                int quantity = data.getInt("quantity");
                 //Timestamp is not yet implemented
-                System.out.println(log_id + "\t" + product_id +"\t" 
-                        + isimport + "\t" + n );
+                //Has to return somesort of object
+                LogEntry entry = new LogEntry(log_id,product_id,isimport,quantity,"");
+                log.add(entry);
             }
         }catch(SQLException e){
             System.err.println(e);
@@ -121,6 +126,7 @@ public class POS {
                 }
             }
         }
+        return log;
     }
     
     /**

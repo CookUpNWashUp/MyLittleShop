@@ -2,7 +2,7 @@
  * Free ware. Made as an exercise.
  * These softwares are made really poorly. Use at your discretion
  */
-package mylittleshop;
+package mylittleshopserver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,6 +49,7 @@ public class Database {
                     this.password);
         }catch(SQLNonTransientConnectionException e){
             System.err.println("Connection error: Database not found");
+            System.exit(1);
         }catch(SQLException f){
             System.err.println("Database error");
         }    

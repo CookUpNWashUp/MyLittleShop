@@ -2,7 +2,7 @@
  * Free ware. Made as an exercise.
  * These softwares are made really poorly. Use at your discretion
  */
-package mylittleshop;
+package mylittleshopserver;
 
 /**
  * Generally describes the structure of the product goes in tandem with the
@@ -61,5 +61,11 @@ public class Product {
      */
     public int getPrice(){
         return this.price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + "product_ID=" + product_ID + ", name=" 
+                + name + ", unit=" + unit + ", price=" + price + '}';
     }
 }
