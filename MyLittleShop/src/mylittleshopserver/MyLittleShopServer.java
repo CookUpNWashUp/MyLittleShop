@@ -27,24 +27,9 @@ public class MyLittleShopServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String command;
         boolean trigger = true;
-        Scanner s = new Scanner(System.in);
-        // TODO code application logic here            
+        Scanner s = new Scanner(System.in);            
         Server sys = new Server();
-        /*System.out.println("Welcome to the POS prototype."
-                + " Pick an option to begin.\n"
-                + "Remember to turn on the Database\n"
-                + "1) Connect to the database\n"
-                + "2) Look up a product by ID\n"
-                + "3) Import a product\n"
-                + "4) Export a product\n"
-                + "5) See the log of store #1\n"
-                + "6) See the product list\n");*/
-        /*Product pro = sys.lookup(1);
-        System.out.println(pro.getID() + "\t" + pro.getName() + "\t" +
-                pro.getUnit() + "\t" + pro.getPrice());
-        sys.close();*/
         ServerSocket listener = null;
         int clientNumber = 0;
         try {
@@ -55,10 +40,11 @@ public class MyLittleShopServer {
 
         try {
             while (trigger) {
-                //This construct refreshes the listener everytime something is called
-                //Just needed to count the # of clients. Can be removed
+                /*Create a new instance of a listener. Triggers a message
+                  if a client connects
+                */
                 new Listener(listener.accept(), clientNumber++, sys).start();
-                System.out.println("Server online. Listening port 9898");
+                System.out.println("Client connected. Listening port 9898");
             }
         } catch (IOException e) {
             System.err.println(e);
@@ -99,36 +85,40 @@ public class MyLittleShopServer {
                 out.println("Enter a line with only a 'q' to shutdown"
                         + " the server\n");
 
-                // Get messages from the client, line by line; return them
-                // capitalized
                 while (true) {
                     String input = in.readLine();
-                    /*if (input == null || input.equals(".")) {
-                        break;
-                    }*/
                     System.out.println("Command received: " + input);
                     switch(input){
                         case "q":
+                            sys.close();
                             System.exit(0);
                             break;
-                        case "getproduct":
+                        case "getproduct": 
                             out.println("Specify the id");
                             Integer searchID = Integer.parseInt(in.readLine());
                             out.println(sys.lookup(searchID).toString());
                             break;
                         case "getlog":
                             out.println("Specify the shop id");
-                            ArrayList result = sys.log(in.readLine());
-                            out.println(result.size());
-                            Iterator itr = result.iterator();
-                            while(itr.hasNext()){
-                                LogEntry entry = (LogEntry) itr.next();
+                            ArrayList resultLog = sys.log(in.readLine());
+                            out.println(resultLog.size());
+                            Iterator itrLog = resultLog.iterator();
+                            while(itrLog.hasNext()){
+                                LogEntry entry = (LogEntry) itrLog.next();
                                 out.println(entry.toString());
                             }
                             break;
+                        case "getinventory":
+                            out.println("Specify the shop id");
+                            ArrayList resultInv = sys.getInventory(in.readLine());
+                            out.println(resultInv.size());
+                            Iterator itrInv = resultInv.iterator();
+                            while(itrInv.hasNext()){
+                                InventoryEntry entry = (InventoryEntry)itrInv.next();
+                                out.println(entry.toString());
+                            }
                                 
                     }
-                    //out.println(input.toUpperCase());
                 }
             } catch (IOException e) {
                 System.err.println("1 client disconnected");

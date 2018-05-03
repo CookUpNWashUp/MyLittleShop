@@ -66,7 +66,7 @@ public class MyLittleShopClient {
                 System.out.println(in.readLine() + "\n");
                 out.println(scan.nextLine());
                 System.out.println(in.readLine() + "\n");
-            }else if (message.equals("getlog")){
+            }else if (message.equals("getlog")|| message.equals("getinventory")){
                 System.out.println(in.readLine() + "\n");
                 out.println(scan.nextLine());
                 int size = Integer.parseInt(in.readLine());
