@@ -91,6 +91,7 @@ public class Database {
             updateState = stmt.executeUpdate(SQLUpdate);
         }catch(SQLException e){
             System.err.println("SQLException: Update failed. Return equals -1");
+            System.err.println(e);
         }
         return updateState;
     }
