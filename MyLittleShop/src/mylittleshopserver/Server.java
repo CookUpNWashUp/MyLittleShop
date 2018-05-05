@@ -65,7 +65,7 @@ public class Server {
      */
     public Product lookupByName(String name){
         Product result = null;
-        String SQLQuery = "SELECT * FROM products WHERE name="+name;
+        String SQLQuery = "SELECT * FROM products WHERE name='"+name+"'";
         ResultSet data = shopdb.query(SQLQuery);
         try{
             while(data.next()){
@@ -73,6 +73,35 @@ public class Server {
                         data.getString("name"),data.getString("unit"),
                         data.getInt("price"));
                 result = match;
+            }
+        }catch (SQLException e){
+            System.err.println("SQLException: lookup failed");
+        }finally{
+            if (data != null){
+                try{
+                    data.close();
+                }
+                catch(SQLException ignore){
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Return the details of all registered product
+     * @return an array list containing all available products
+     */
+    public ArrayList<Product> lookupAll(){
+        ArrayList<Product> result = new ArrayList();
+        String SQLQuery = "SELECT * FROM products";
+        ResultSet data = shopdb.query(SQLQuery);
+        try{
+            while(data.next()){
+                Product entry= new Product(data.getInt("product_id"),
+                        data.getString("name"),data.getString("unit"),
+                        data.getInt("price"));
+                result.add(entry);
             }
         }catch (SQLException e){
             System.err.println("SQLException: lookup failed");
@@ -254,8 +283,8 @@ public class Server {
      * @return updateState Indicates if the operation is successful
      */
     public int addProduct(String name, String unit, int price){
-        String SQLQuery = "INSERT INTO products(name,unit,price) VALUES("
-                + name+","+unit+","+price+ ")";
+        String SQLQuery = "INSERT INTO products(name,unit,price) VALUES('"
+                + name+"','"+unit+"',"+price+ ")";
         int updateState = shopdb.update(SQLQuery);
         //Must initialize all shop logs with the new product to ensure the 
         //inventory function returns a value that's not null
@@ -264,8 +293,16 @@ public class Server {
         Iterator itr = tableList.iterator();
         while(itr.hasNext()){
             String entry = (String) itr.next();
-            updateState = this.importProduct(newProduct.getID(),0, entry);
-            updateState = this.exportProduct(newProduct.getID(),0, entry);
+            String SQLImportInit ="INSERT INTO "+entry
+                + " (product_id,isimport,quantity,time) "
+                + "VALUES ("
+                + newProduct.getID()+ ",true," + 0 + ",'2014-01-01 06:30:00')";
+            String SQLExportInit ="INSERT INTO "+entry
+                + " (product_id,isimport,quantity,time) "
+                + "VALUES ("
+                + newProduct.getID()+ ",false," + 0 + ",'2014-01-01 06:30:00')";
+            updateState = shopdb.update(SQLImportInit);
+            updateState = shopdb.update(SQLExportInit);
             }
         //The operation can only be deemed as complete if the procedure has
         //also initialized all log tables
@@ -283,6 +320,45 @@ public class Server {
         String SQLQuery = "DELETE FROM product WHERE id = "+id;
         int updateState = shopdb.update(SQLQuery);
         return updateState;
+    }
+    
+    /**
+     * Adds a new shop to the database, synonymous with adding a new table
+     * conforming to the structure of the LogEntry object.
+     * @param shopID the new shop ID of the shop that the user wants to create
+     * @return the state of the request. -1 means failure
+     */
+    public int addShop(String shopID){
+        String SQLQuery = "CREATE TABLE Shop"+shopID+"Log(\n" +
+        "log_ID INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY "
+                + "(START WITH 1, INCREMENT BY 1),\n" +
+        "product_ID INTEGER,\n" +
+        "isImport BOOLEAN NOT NULL,\n" +
+        "quantity INTEGER NOT NULL,\n" +
+        "time TIMESTAMP NOT NULL DEFAULT '2014-01-01 06:30:00',\n" +
+        "FOREIGN KEY(product_ID) REFERENCES products(product_ID) "
+                + "ON DELETE CASCADE ON UPDATE RESTRICT\n" +
+        ")";
+        int updateState = shopdb.update(SQLQuery);
+        //Initialize the newly added shop with the products
+        ArrayList<Product> productList = this.lookupAll();
+        Iterator itr = productList.iterator();
+        while (itr.hasNext()){
+            Product entry = (Product) itr.next();
+            updateState = this.importProduct(entry.getID(),0,shopID);
+            updateState = this.exportProduct(entry.getID(),0,shopID);
+        }
+        return updateState;
+    }
+    
+    /**
+     * Deletes an existing shop.
+     * @param shopID the ID of the shop the user wants to delete
+     * @return the state of the request. -1 means failure
+     */
+    public int deleteShop(String shopID){
+        String SQLquery = "DROP TABLE shop"+shopID+"log";
+        return shopdb.update(SQLquery);
     }
     
     /**
