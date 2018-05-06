@@ -166,27 +166,30 @@ public class Server {
     public ArrayList<LogEntry> log(String ShopID){
         String SQLQuery = "SELECT * FROM shop" + ShopID + "log"
                 + " WHERE quantity>0";
-        ResultSet data = shopdb.query(SQLQuery);
         ArrayList<LogEntry> log = new ArrayList<>();
-        try{
-            while (data.next()) {
-                int log_id = data.getInt("log_id");
-                int product_id = data.getInt("product_id");
-                Boolean isimport = data.getBoolean("isimport");
-                int quantity = data.getInt("quantity");
-                //Timestamp is not yet implemented
-                //Has to return somesort of object
-                LogEntry entry = new LogEntry(log_id,product_id,isimport,quantity,"");
-                log.add(entry);
-            }
-        }catch(SQLException e){
-            System.err.println(e);
-        }finally{
-            if (data != null){
-                try{
-                    data.close();
+        ResultSet data = shopdb.query(SQLQuery);
+        if (data!=null){
+            try{
+                while (data.next()) {
+                    int log_id = data.getInt("log_id");
+                    int product_id = data.getInt("product_id");
+                    Boolean isimport = data.getBoolean("isimport");
+                    int quantity = data.getInt("quantity");
+                    //Timestamp is not yet implemented
+                    //Has to return somesort of object
+                    LogEntry entry = new LogEntry(log_id,product_id,isimport,quantity,"");
+                    log.add(entry);
                 }
-                catch(SQLException ignore){
+            }catch(SQLException e){
+                System.err.println(e);
+            }finally{
+                if (data != null){
+                    try{
+                        data.close();
+                    }
+                    catch(SQLException ignore){
+                        System.err.println(ignore);
+                    }
                 }
             }
         }
