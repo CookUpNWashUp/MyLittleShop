@@ -18,13 +18,13 @@ import com.sun.net.ssl.*;
 import com.sun.net.ssl.internal.ssl.Provider;
 import java.security.Security;
 
-
 /**
  * Class with main object to invoke the facility (aside from the database)
  *
  * @author Hoang
  */
 public class MyLittleShopServer {
+
     /**
      * Sets up the server side socket and process requests from the client side
      *
@@ -32,11 +32,10 @@ public class MyLittleShopServer {
      */
     public static void main(String[] args) {
         boolean trigger = true;
-        Scanner s = new Scanner(System.in);            
         Server sys = new Server();
         //Registering the JSSE provider
         Security.addProvider(new Provider());
-        System.setProperty("javax.net.ssl.keyStore","MLSTrustedKS.ks");
+        System.setProperty("javax.net.ssl.keyStore", "MLSTrustedKS.ks");
         System.setProperty("javax.net.ssl.keyStorePassword", "2Y9AMGsU4NVjpaxb");
         //ServerSocket listener = null;
         SSLServerSocket listener = null;
@@ -45,8 +44,8 @@ public class MyLittleShopServer {
             //Initialize the server socket (unsafe)
             //listener = new ServerSocket(9898);
             //Initialize the SSL socket
-            SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
-            listener = (SSLServerSocket)factory.createServerSocket(9898);
+            SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            listener = (SSLServerSocket) factory.createServerSocket(9898);
         } catch (IOException e) {
             System.err.println(e);
         }
@@ -58,13 +57,13 @@ public class MyLittleShopServer {
                   SSLServerSocket only accepts the connection. The actual
                   conversation happens on a SSLSocket that will be created on
                   the same port
-                */
-                new Listener((SSLSocket)listener.accept(), clientNumber++, sys).start();
+                 */
+                new Listener((SSLSocket) listener.accept(), clientNumber++, sys).start();
                 System.out.println("Client connected. Listening port 9898");
             }
         } catch (IOException e) {
             System.err.println(e);
-        }finally {
+        } finally {
             try {
                 listener.close();
             } catch (IOException e) {
@@ -72,22 +71,25 @@ public class MyLittleShopServer {
             }
         }
     }
+
     /**
-     * Specifies the server behavior upon having received a client.
-     * The class is threaded so as to be able to handle many clients at once
-     * This class is private to the server so as to increase security.
-     * This is to be tested
+     * Specifies the server behavior upon having received a client. The class is
+     * threaded so as to be able to handle many clients at once This class is
+     * private to the server so as to increase security. This is to be tested
      */
     private static class Listener extends Thread {
 
         private SSLSocket socket;
         private int clientNumber;
         private Server sys;
-        
+
         /**
          * Constructor of the private class.
-         * @param socket The socket that's to be opened to handle client connection
-         * @param clientNumber The variable to count the current number of connected client
+         *
+         * @param socket The socket that's to be opened to handle client
+         * connection
+         * @param clientNumber The variable to count the current number of
+         * connected client
          * @param sys The instance of the database.
          */
         public Listener(SSLSocket socket, int clientNumber, Server sys) {
@@ -95,30 +97,26 @@ public class MyLittleShopServer {
             this.sys = sys;
             this.clientNumber = clientNumber;
             System.out.println("New connection at port."
-                    + " # of Client: "+ clientNumber);
+                    + " # of Client: " + clientNumber);
         }
 
         @Override
         public void run() {
-           //Scanner scanner = null;
+            //Scanner scanner = null;
             try {
+                boolean logInState = false;
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 // A client inputs username and password
                 //scanner = new Scanner(System.in);
-                out.println("Please enter your username: ");
-                String username = in.readLine();
-                out.println("Please enter your password: ");                
-                String password = in.readLine();
-                try{
-                    boolean resState = sys.isUsernameRegistered(username, password);
-                    out.println(resState);
-                    if (resState == false){
-                        
-                    }
-                }catch(SQLException e){
-                    System.err.println("Can't submit credentials");
+                while (!logInState) {
+                    out.println("Please enter your username: ");
+                    String username = in.readLine();
+                    out.println("Please enter your password: ");
+                    String password = in.readLine();
+                    logInState = sys.checkPassword(username, password);
+                    out.println(logInState);
                 }
                 // Send a welcome message to the client.
                 out.println("Hello, you are connected to the Little Shop."
@@ -131,34 +129,33 @@ public class MyLittleShopServer {
                 while (true) {
                     String input = in.readLine();
                     System.out.println("Command received: " + input);
-                    switch(input){
+                    switch (input) {
                         //Check user type
-                        
+
                         //Service list
                         case "q":
                             sys.close();
                             System.exit(0);
                             break;
-                        case "getproduct": 
+                        case "getproduct":
                             out.println("Specify the id");
                             Integer searchID = Integer.parseInt(in.readLine());
-                            try{
+                            try {
                                 out.println(sys.lookup(searchID).toString());
-                            }catch(NullPointerException npe){
+                            } catch (NullPointerException npe) {
                                 out.println("No such product");
                             }
                             break;
                         case "getallproduct":
                             ArrayList<Product> resultProductSet = sys.lookupAll();
-                            if (!resultProductSet.isEmpty()){
+                            if (!resultProductSet.isEmpty()) {
                                 out.println(resultProductSet.size());
                                 Iterator itrLog = resultProductSet.iterator();
-                                while(itrLog.hasNext()){
+                                while (itrLog.hasNext()) {
                                     Product entry = (Product) itrLog.next();
                                     out.println(entry.toString());
                                 }
-                            }
-                            else{
+                            } else {
                                 String nullString = null;
                                 out.println(nullString);
                             }
@@ -166,35 +163,33 @@ public class MyLittleShopServer {
                         case "getlog":
                             out.println("Specify the shop id");
                             ArrayList resultLog = sys.log(in.readLine());
-                            if (!resultLog.isEmpty()){
+                            if (!resultLog.isEmpty()) {
                                 out.println(resultLog.size());
                                 Iterator itrLog = resultLog.iterator();
-                                while(itrLog.hasNext()){
+                                while (itrLog.hasNext()) {
                                     LogEntry entry = (LogEntry) itrLog.next();
                                     out.println(entry.toString());
                                 }
-                            }
-                            else{
+                            } else {
                                 String nullString = null;
                                 out.println(nullString);
                             }
                             break;
                         case "getallproducts":
-                            
+
                         case "getinventory":
                             out.println("Specify the shop id");
                             ArrayList resultInv = sys.getInventory(in.readLine());
-                            if (!resultInv.isEmpty()){
-                            out.println(resultInv.size());
+                            if (!resultInv.isEmpty()) {
+                                out.println(resultInv.size());
                                 Iterator itrInv = resultInv.iterator();
-                                while(itrInv.hasNext()){
-                                    InventoryEntry entry = (InventoryEntry)itrInv.next();
+                                while (itrInv.hasNext()) {
+                                    InventoryEntry entry = (InventoryEntry) itrInv.next();
                                     out.println(entry.toString());
                                 }
-                            }
-                            else{
+                            } else {
                                 String nullString = null;
-                                out.println(nullString);                           
+                                out.println(nullString);
                             }
                             break;
                         case "deleteproduct":
@@ -245,6 +240,5 @@ public class MyLittleShopServer {
                 }
             }
         }
-
     }
 }

@@ -45,25 +45,19 @@ public class MyLittleShopClient {
         SSLSocket socket = (SSLSocket)sslsocketfactory.createSocket(serverAddress,9898);
         socket.startHandshake();
         //Initializing the streams for communication
-        
+        boolean logInState = false;
         in = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
         Scanner scan = new Scanner(System.in);
         //Log in protocol
-        System.out.println(in.readLine() + "\n");
-        out.println(scan.nextLine());
-        System.out.println(in.readLine() + "\n");
-        out.println(scan.nextLine());
-        //Registration state check
-        if (in.readLine().equals("true")){
-            /*System.out.println(in.readLine() + "\n");
+        while (!logInState){
+            System.out.println(in.readLine() + "\n");
             out.println(scan.nextLine());
+            System.out.println(in.readLine() + "\n");
             out.println(scan.nextLine());
-            out.println(scan.nextLine());*/
-        }else{
-            System.out.println("User not found");
-        }
+            if (in.readLine().equals("true")) logInState = true;
+        }       
         // Consume the initial welcoming messages from the server
         for (int i = 0; i < 3; i++) {
            System.out.println(in.readLine() + "\n");
