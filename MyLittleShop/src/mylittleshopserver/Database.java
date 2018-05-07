@@ -70,7 +70,7 @@ public class Database {
             Statement stmt = this.link.createStatement();
             data = stmt.executeQuery(SQLQuery);
             
-        }catch(SQLException e){
+        }catch(SQLException e){ 
             System.err.println(e);
         }
         
@@ -90,7 +90,8 @@ public class Database {
             Statement stmt = this.link.createStatement();
             updateState = stmt.executeUpdate(SQLUpdate);
         }catch(SQLException e){
-            System.err.println("SQLException: Update failed. Return euquals -1");
+            System.err.println("SQLException: Update failed. Return equals -1");
+            System.err.println(e);
         }
         return updateState;
     }

@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Free ware. Definitely an exercise.
+ * These softwares are made really poorly. Use at your discretion
+ * 
  */
 package mylittleshopserver;
 
@@ -15,14 +15,21 @@ public class LogEntry {
     private final boolean isImport;
     private final int quantity;
     private final String time;
-
+    
+    /**
+     * Constructor for a log entry. Each log entry responds to 1 type of product
+     * @param logID the id of a log 
+     * @param productID the id of the product in concern    
+     * @param isImport specify if the action was an import(buy) or an export(sell)
+     * @param quantity quantity of the product in concern
+     * @param time Timestamp of the action
+     */
     public LogEntry(int logID, int productID, boolean isImport,
             int quantity, String time) {
         this.logID = logID;
         this.productID = productID;
         this.isImport = isImport;
         this.quantity = quantity;
-        //Time is not yet implemented
         this.time = "NA";
     }
 
