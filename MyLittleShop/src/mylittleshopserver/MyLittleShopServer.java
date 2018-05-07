@@ -100,11 +100,26 @@ public class MyLittleShopServer {
 
         @Override
         public void run() {
+           //Scanner scanner = null;
             try {
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
+                // A client inputs username and password
+                //scanner = new Scanner(System.in);
+                out.println("Please enter your username: ");
+                String username = in.readLine();
+                out.println("Please enter your password: ");                
+                String password = in.readLine();
+                try{
+                    boolean resState = sys.isUsernameRegistered(username, password);
+                    out.println(resState);
+                    if (resState == false){
+                        
+                    }
+                }catch(SQLException e){
+                    System.err.println("Can't submit credentials");
+                }
                 // Send a welcome message to the client.
                 out.println("Hello, you are connected to the Little Shop."
                         + "Connected clients: "
@@ -117,6 +132,9 @@ public class MyLittleShopServer {
                     String input = in.readLine();
                     System.out.println("Command received: " + input);
                     switch(input){
+                        //Check user type
+                        
+                        //Service list
                         case "q":
                             sys.close();
                             System.exit(0);
@@ -128,6 +146,21 @@ public class MyLittleShopServer {
                                 out.println(sys.lookup(searchID).toString());
                             }catch(NullPointerException npe){
                                 out.println("No such product");
+                            }
+                            break;
+                        case "getallproduct":
+                            ArrayList<Product> resultProductSet = sys.lookupAll();
+                            if (!resultProductSet.isEmpty()){
+                                out.println(resultProductSet.size());
+                                Iterator itrLog = resultProductSet.iterator();
+                                while(itrLog.hasNext()){
+                                    Product entry = (Product) itrLog.next();
+                                    out.println(entry.toString());
+                                }
+                            }
+                            else{
+                                String nullString = null;
+                                out.println(nullString);
                             }
                             break;
                         case "getlog":
@@ -146,6 +179,8 @@ public class MyLittleShopServer {
                                 out.println(nullString);
                             }
                             break;
+                        case "getallproducts":
+                            
                         case "getinventory":
                             out.println("Specify the shop id");
                             ArrayList resultInv = sys.getInventory(in.readLine());
@@ -179,7 +214,7 @@ public class MyLittleShopServer {
                             int exportID = Integer.parseInt(in.readLine());
                             int exportQuantity = Integer.parseInt(in.readLine());
                             String exportShop = in.readLine();
-                            out.println(sys.importProduct(exportID, exportQuantity, exportShop));
+                            out.println(sys.exportProduct(exportID, exportQuantity, exportShop));
                             break;
                         case "addproduct":
                             out.println("Specify the name,unit and the price");

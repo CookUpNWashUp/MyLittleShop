@@ -4,9 +4,14 @@
  */
 package mylittleshopserver;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -16,7 +21,7 @@ import java.util.*;
  */
 public class Server {
     private final Database shopdb;
-    
+    private Connection connection;
     /**
      * Constructor method. Establishes the connection to the database.
      * This might be changed in the future to support access control
@@ -320,7 +325,7 @@ public class Server {
      * @return updateState Indicates if the operation is successful
      */
     public int deleteProduct(int id){
-        String SQLQuery = "DELETE FROM product WHERE id = "+id;
+        String SQLQuery = "DELETE FROM products WHERE product_id = "+id;
         int updateState = shopdb.update(SQLQuery);
         return updateState;
     }
@@ -353,7 +358,50 @@ public class Server {
         }
         return updateState;
     }
-    
+    public int userRegister(String username, String password, String type, int domain) throws SQLException{
+        int updateState =-1;
+            String SQLQuery = String.format("INSERT into USERINFORMATION" + "(username, password, domain)"
+                    + "values('%s','%s',%s)", username, password, domain);
+            System.out.println(SQLQuery);
+            
+            updateState = shopdb.update(SQLQuery);
+            System.out.println("Insert completed");
+            /*} catch(Exception e){
+                e.printStackTrace();
+            } finally{
+            if (stmt != null){
+                stmt.close();
+            }
+            if (scanner != null){
+                scanner.close();
+            }
+        }*/
+            return updateState;
+    }
+    // Check if a username already registered
+    public boolean isUsernameRegistered(String username, String password) throws SQLException{
+        String SQLQuery = "SELECT * from USERINFORMATION where username = ? and password = ?";
+                try{
+                   ResultSet data = shopdb.query(SQLQuery);
+                   if (data.next()){
+                       return true;
+                   } else{
+                       return false;
+                   }
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                    return true;
+                }
+    }
+    public boolean checkPassword() throws SQLException{
+        String SQLQuery = "SELECT username, password FROM USERINFORMATION where username = ? and password = ?";
+        ResultSet data = shopdb.query(SQLQuery);
+        if (data.next()){
+            return true;
+        } else{
+            return false;
+    }
+    }
     /**
      * Deletes an existing shop.
      * @param shopID the ID of the shop the user wants to delete

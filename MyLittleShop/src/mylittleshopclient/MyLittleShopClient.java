@@ -49,13 +49,27 @@ public class MyLittleShopClient {
         in = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-
+        Scanner scan = new Scanner(System.in);
+        //Log in protocol
+        System.out.println(in.readLine() + "\n");
+        out.println(scan.nextLine());
+        System.out.println(in.readLine() + "\n");
+        out.println(scan.nextLine());
+        //Registration state check
+        if (in.readLine().equals("true")){
+            /*System.out.println(in.readLine() + "\n");
+            out.println(scan.nextLine());
+            out.println(scan.nextLine());
+            out.println(scan.nextLine());*/
+        }else{
+            System.out.println("User not found");
+        }
         // Consume the initial welcoming messages from the server
         for (int i = 0; i < 3; i++) {
            System.out.println(in.readLine() + "\n");
         }
         //Input handling to issue to the server
-        Scanner scan = new Scanner(System.in);
+        
         while(true){
             String message = scan.nextLine();
             out.println(message);
@@ -101,7 +115,17 @@ public class MyLittleShopClient {
                 if (Integer.parseInt(in.readLine())==-1)
                     System.out.println("Request failed");
                 else System.out.println("Request succeed");
-            }   
+            }else if (message.equals("getallproduct")){
+                int size = 0;
+                try{
+                    size = Integer.parseInt(in.readLine());
+                    for (int i=0;i<size;i++)
+                    System.out.println(in.readLine() + "\n");
+                }
+                catch (NumberFormatException e){
+                    System.out.println("No records found");
+                }
+            }
         }
     }
 
