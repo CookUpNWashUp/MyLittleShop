@@ -70,7 +70,7 @@ public class Database {
             Statement stmt = this.link.createStatement();
             data = stmt.executeQuery(SQLQuery);
             
-        }catch(SQLException e){
+        }catch(SQLException e){ 
             System.err.println(e);
         }
         
