@@ -5,17 +5,14 @@
 package mylittleshopserver;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import javax.swing.JOptionPane;
+
 
 /**
  * Describes the POS functions of the program.
@@ -162,10 +159,20 @@ public class Server {
                 + "(product_id,isimport,quantity,time) "
                 + "VALUES ("
                 + ID + ",false," + quantity + ",'2014-01-01 06:30:00')");
-        //System.out.println(SQLQuery);
+        //Look up the inventory of the shop
+        ArrayList<InventoryEntry> inventoryList = this.getInventory(ShopID);
+        Iterator itr = inventoryList.iterator();
+        InventoryEntry entry = new InventoryEntry(-1,"No Product","No unit",-1);
+        while (itr.hasNext()){
+            entry = (InventoryEntry) itr.next();
+            if (entry.getProduct_id()==ID) break;
+        }
+        //Compare the inventory with the product quantity
+        if(entry.getQuantity()>=quantity){
         //Timestamps are contant for the timebeing.
         int updateState = shopdb.update(SQLQuery);
         return updateState;
+        }else return -1;
     }
 
     /**
@@ -386,7 +393,6 @@ public class Server {
             byte[] digestedBytes = md.digest();
             BigInteger number = new BigInteger(1, digestedBytes);
             digestedPassword = number.toString();
-            //while(digestedPassword.length()<30) digestedPassword = "0"+digestedPassword;
             System.out.println(digestedPassword);
             System.out.println(digestedPassword.length());
         }catch (NoSuchAlgorithmException e){
@@ -409,7 +415,6 @@ public class Server {
             byte[] digestedBytes = md.digest();
             BigInteger number = new BigInteger(1, digestedBytes);
             digestedPassword = number.toString();
-            //while(digestedPassword.length()<30) digestedPassword = "0"+ digestedPassword;
             System.out.println(digestedPassword.length());
             System.out.println(digestedPassword);
         }catch (NoSuchAlgorithmException e){
@@ -429,7 +434,19 @@ public class Server {
         }
         return logInState;
     }
-
+    
+    public String getUserShop(String username){
+        String SQLQuery = "SELECT domain FROM userinformation WHERE username="
+                + "'"+username+"'";
+        ResultSet data = shopdb.query(SQLQuery);
+        String shopID="";
+        try{
+            while(data.next()) shopID=data.getString("domain"); 
+        }catch(SQLException e){
+            System.err.println("Can't find the user");
+        }
+        return shopID;
+    }
     /**
      * Deletes an existing shop.
      *
