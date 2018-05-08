@@ -104,6 +104,7 @@ public class MyLittleShopServer {
         public void run() {
             //Scanner scanner = null;
             try {
+                String username= new String();
                 boolean logInState = false;
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
@@ -112,12 +113,14 @@ public class MyLittleShopServer {
                 //scanner = new Scanner(System.in);
                 while (!logInState) {
                     out.println("Please enter your username: ");
-                    String username = in.readLine();
+                    username = in.readLine();
                     out.println("Please enter your password: ");
                     String password = in.readLine();
                     logInState = sys.checkPassword(username, password);
                     out.println(logInState);
                 }
+                //Send the client the shopID of the client
+                out.println(sys.getUserShop(username));
                 // Send a welcome message to the client.
                 out.println("Hello, you are connected to the Little Shop."
                         + "Connected clients: "

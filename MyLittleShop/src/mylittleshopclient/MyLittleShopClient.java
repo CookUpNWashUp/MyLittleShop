@@ -21,7 +21,8 @@ import java.util.Scanner;
  * @author Hoang
  */
 public class MyLittleShopClient {
-
+    
+    private String userShopID;
     private BufferedReader in;
     private PrintWriter out;
   
@@ -57,7 +58,8 @@ public class MyLittleShopClient {
             System.out.println(in.readLine() + "\n");
             out.println(scan.nextLine());
             if (in.readLine().equals("true")) logInState = true;
-        }       
+        }
+        userShopID = in.readLine();
         // Consume the initial welcoming messages from the server
         for (int i = 0; i < 3; i++) {
            System.out.println(in.readLine() + "\n");
