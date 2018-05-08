@@ -104,13 +104,13 @@ public class MyLittleShopServer {
         public void run() {
             //Scanner scanner = null;
             try {
-                String username= new String();
+                String username = new String();
                 boolean logInState = false;
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 // A client inputs username and password
-                //scanner = new Scanner(System.in);
+
                 while (!logInState) {
                     out.println("Please enter your username: ");
                     username = in.readLine();
@@ -121,6 +121,7 @@ public class MyLittleShopServer {
                 }
                 //Send the client the shopID of the client
                 out.println(sys.getUserShop(username));
+
                 // Send a welcome message to the client.
                 out.println("Hello, you are connected to the Little Shop."
                         + "Connected clients: "
@@ -133,9 +134,39 @@ public class MyLittleShopServer {
                     String input = in.readLine();
                     System.out.println("Command received: " + input);
                     switch (input) {
-                        //Check user type
-
                         //Service list
+                        case "getlogbydate":
+                            out.println("Specify the timeframe (year->month->day"
+                                    + " start->end) and the shopID: ");
+                            ArrayList resultLog = sys.getLogByDate(in.readLine(),
+                                    in.readLine(), in.readLine(), in.readLine(),
+                                    in.readLine(), in.readLine(), in.readLine());
+                            if (!resultLog.isEmpty()) {
+                                out.println(resultLog.size());
+                                Iterator itrLog = resultLog.iterator();
+                                while (itrLog.hasNext()) {
+                                    LogEntry entry = (LogEntry) itrLog.next();
+                                    out.println(entry.toString());
+                                }
+                            } else {
+                                String nullString = null;
+                                out.println(nullString);
+                            }
+                            break;
+                        case "login":
+                            out.println("Please enter your username: ");
+                            username = in.readLine();
+                            out.println("Please enter your password: ");
+                            String password = in.readLine();
+                            logInState = sys.checkPassword(username, password);
+                            out.println(logInState);
+                            //Send the client th
+                            out.println(sys.getUserShop(username));
+                        case "logout":
+                            String signal = in.readLine();
+                            if (signal.length() > 0) {
+                                logInState = false;
+                            }
                         case "q":
                             sys.close();
                             System.exit(0);
@@ -165,10 +196,10 @@ public class MyLittleShopServer {
                             break;
                         case "getlog":
                             out.println("Specify the shop id");
-                            ArrayList resultLog = sys.log(in.readLine());
-                            if (!resultLog.isEmpty()) {
-                                out.println(resultLog.size());
-                                Iterator itrLog = resultLog.iterator();
+                            ArrayList resultLogAll = sys.log(in.readLine());
+                            if (!resultLogAll.isEmpty()) {
+                                out.println(resultLogAll.size());
+                                Iterator itrLog = resultLogAll.iterator();
                                 while (itrLog.hasNext()) {
                                     LogEntry entry = (LogEntry) itrLog.next();
                                     out.println(entry.toString());
@@ -178,8 +209,6 @@ public class MyLittleShopServer {
                                 out.println(nullString);
                             }
                             break;
-                        case "getallproducts":
-
                         case "getinventory":
                             out.println("Specify the shop id");
                             ArrayList resultInv = sys.getInventory(in.readLine());

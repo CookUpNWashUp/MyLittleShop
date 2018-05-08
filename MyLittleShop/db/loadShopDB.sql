@@ -26,4 +26,11 @@ CREATE TABLE Shop02Log(
 	time TIMESTAMP NOT NULL DEFAULT '2014-01-01 06:30:00',
 	FOREIGN KEY(product_ID) REFERENCES products(product_ID) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+
+CREATE TABLE userinformation(
+        username VARCHAR(32) PRIMARY KEY NOT NULL,
+        password VARCHAR(39) NOT NULL,
+        domain VARCHAR(5) NOT NULL
+);
 	
+INSERT INTO userinformation(username,password,domain) values('manager','123','01');

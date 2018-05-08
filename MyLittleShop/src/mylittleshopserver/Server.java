@@ -10,9 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.*;
-
 
 /**
  * Describes the POS functions of the program.
@@ -72,7 +71,7 @@ public class Server {
      * @param name
      * @return result A product object that has the matching name with the input
      */
-    public Product lookupByName(String name) {
+    private Product lookupByName(String name) {
         Product result = null;
         String SQLQuery = "SELECT * FROM products WHERE name='" + name + "'";
         ResultSet data = shopdb.query(SQLQuery);
@@ -136,12 +135,10 @@ public class Server {
      * @return updateState Indicates if the update is successful or not
      */
     public int importProduct(int ID, int quantity, String ShopID) {
-        String SQLQuery = new String("INSERT INTO shop" + ShopID + "log "
+        String SQLQuery = "INSERT INTO shop" + ShopID + "log "
                 + "(product_id,isimport,quantity,time) "
                 + "VALUES ("
-                + ID + ",true," + quantity + ",'2014-01-01 06:30:00')");
-        //System.out.println(SQLQuery);
-        //Timestamps are contant for the timebeing.
+                + ID + ",true," + quantity + ",CURRENT_TIMESTAMP)";
         int updateState = shopdb.update(SQLQuery);
         return updateState;
     }
@@ -158,21 +155,25 @@ public class Server {
         String SQLQuery = new String("INSERT INTO shop" + ShopID + "log "
                 + "(product_id,isimport,quantity,time) "
                 + "VALUES ("
-                + ID + ",false," + quantity + ",'2014-01-01 06:30:00')");
+                + ID + ",false," + quantity + ",CURRENT_TIMESTAMP)");
         //Look up the inventory of the shop
         ArrayList<InventoryEntry> inventoryList = this.getInventory(ShopID);
         Iterator itr = inventoryList.iterator();
-        InventoryEntry entry = new InventoryEntry(-1,"No Product","No unit",-1);
-        while (itr.hasNext()){
+        InventoryEntry entry = new InventoryEntry(-1, "No Product", "No unit", -1);
+        while (itr.hasNext()) {
             entry = (InventoryEntry) itr.next();
-            if (entry.getProduct_id()==ID) break;
+            if (entry.getProduct_id() == ID) {
+                break;
+            }
         }
         //Compare the inventory with the product quantity
-        if(entry.getQuantity()>=quantity){
-        //Timestamps are contant for the timebeing.
-        int updateState = shopdb.update(SQLQuery);
-        return updateState;
-        }else return -1;
+        if (entry.getQuantity() >= quantity) {
+            //Timestamps are contant for the timebeing.
+            int updateState = shopdb.update(SQLQuery);
+            return updateState;
+        } else {
+            return -1;
+        }
     }
 
     /**
@@ -196,9 +197,62 @@ public class Server {
                     int product_id = data.getInt("product_id");
                     Boolean isimport = data.getBoolean("isimport");
                     int quantity = data.getInt("quantity");
-                    //Timestamp is not yet implemented
-                    //Has to return somesort of object
-                    LogEntry entry = new LogEntry(log_id, product_id, isimport, quantity, "");
+                    Timestamp time = data.getTimestamp("time");
+                    Product inQuestion = this.lookup(log_id);
+                    LogEntry entry = new LogEntry(log_id, product_id, inQuestion.getName(),
+                            isimport, quantity, time.toString());
+                    log.add(entry);
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            } finally {
+                if (data != null) {
+                    try {
+                        data.close();
+                    } catch (SQLException ignore) {
+                        System.err.println(ignore);
+                    }
+                }
+            }
+        }
+        return log;
+    }
+
+    public ArrayList<LogEntry> getLogByDate(String yearStart, String monthStart, String dayStart,
+            String yearEnd, String monthEnd, String dayEnd, String shopID) {
+        while (monthStart.length() < 2) {
+            monthStart = "0" + monthStart;
+        }
+
+        while (monthEnd.length() < 2) {
+            monthEnd = "0" + monthEnd;
+        }
+
+        while (dayStart.length() < 2) {
+            dayStart = "0" + dayStart;
+        }
+
+        while (dayEnd.length() < 2) {
+            dayEnd = "0" + dayEnd;
+        }
+
+        String SQLQuery = "SELECT * FROM shop" + shopID + "log WHERE time BETWEEN "
+                + "'" + yearStart + "-" + monthStart + "-" + dayStart + " 00:00:00' AND "
+                + "'" + yearEnd + "-" + monthEnd + "-" + dayEnd + " 23:59:59'";
+
+        ArrayList<LogEntry> log = new ArrayList<>();
+        ResultSet data = shopdb.query(SQLQuery);
+        if (data != null) {
+            try {
+                while (data.next()) {
+                    int log_id = data.getInt("log_id");
+                    int product_id = data.getInt("product_id");
+                    Boolean isimport = data.getBoolean("isimport");
+                    int quantity = data.getInt("quantity");
+                    Timestamp time = data.getTimestamp("time");
+                    Product inQuestion = this.lookup(log_id);
+                    LogEntry entry = new LogEntry(log_id, product_id, inQuestion.getName(),
+                            isimport, quantity, time.toString());
                     log.add(entry);
                 }
             } catch (SQLException e) {
@@ -376,18 +430,20 @@ public class Server {
         }
         return updateState;
     }
-    
+
     /**
      * Adds a new user to the database
+     *
      * @param username
      * @param password
      * @param domain The name of the shop where the user operates
-     * @return 
+     * @return
      */
-    public int userRegister(String username, String password, String domain){
+    public int userRegister(String username, String password, String domain) {
         int updateState = -1;
-        String digestedPassword = password +"0x4B98C701E9C8FE347564F090DD6809843492880C";
-        try{
+        String digestedPassword = password;
+        //+"0x4B98C701E9C8FE347564F090DD6809843492880C";
+        /*try{
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(digestedPassword.getBytes());
             byte[] digestedBytes = md.digest();
@@ -397,10 +453,10 @@ public class Server {
             System.out.println(digestedPassword.length());
         }catch (NoSuchAlgorithmException e){
             System.err.println("Can't use hash algorithm");
-        }
+        }*/
         String SQLQuery = String.format("INSERT into USERINFORMATION" + "(username, password, domain)"
                 + "values('%s','%s','%s')", username, digestedPassword, domain);
-        System.out.println(SQLQuery);
+        //System.out.println(SQLQuery);
 
         updateState = shopdb.update(SQLQuery);
         return updateState;
@@ -408,8 +464,9 @@ public class Server {
 
     public boolean checkPassword(String username, String password) {
         boolean logInState = false;
-        String digestedPassword = password +"0x4B98C701E9C8FE347564F090DD6809843492880C";
-        try{
+        String digestedPassword = password;
+        //+"0x4B98C701E9C8FE347564F090DD6809843492880C";
+        /*try{
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(digestedPassword.getBytes());
             byte[] digestedBytes = md.digest();
@@ -419,7 +476,7 @@ public class Server {
             System.out.println(digestedPassword);
         }catch (NoSuchAlgorithmException e){
             System.err.println("Can't use hash algorithm");
-        }
+        }*/
         String SQLQuery = "SELECT username, password FROM USERINFORMATION WHERE"
                 + " username ='" + username + "'AND password ='" + digestedPassword + "'";
         ResultSet data = shopdb.query(SQLQuery);
@@ -434,19 +491,22 @@ public class Server {
         }
         return logInState;
     }
-    
-    public String getUserShop(String username){
+
+    public String getUserShop(String username) {
         String SQLQuery = "SELECT domain FROM userinformation WHERE username="
-                + "'"+username+"'";
+                + "'" + username + "'";
         ResultSet data = shopdb.query(SQLQuery);
-        String shopID="";
-        try{
-            while(data.next()) shopID=data.getString("domain"); 
-        }catch(SQLException e){
+        String shopID = "";
+        try {
+            while (data.next()) {
+                shopID = data.getString("domain");
+            }
+        } catch (SQLException e) {
             System.err.println("Can't find the user");
         }
         return shopID;
     }
+
     /**
      * Deletes an existing shop.
      *

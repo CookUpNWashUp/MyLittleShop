@@ -121,6 +121,18 @@ public class MyLittleShopClient {
                 catch (NumberFormatException e){
                     System.out.println("No records found");
                 }
+            }else if (message.equals("getlogbydate")){
+                System.out.println(in.readLine() + "\n");
+                for(int i=0;i<7;i++) out.println(scan.nextLine());
+                int size = 0;
+                try{
+                    size = Integer.parseInt(in.readLine());
+                    for (int i=0;i<size;i++)
+                    System.out.println(in.readLine() + "\n");
+                }
+                catch (NumberFormatException e){
+                    System.out.println("No records found");
+                }
             }
         }
     }
