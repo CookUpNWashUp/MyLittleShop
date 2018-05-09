@@ -26,26 +26,25 @@ import java.security.Security;
 public class MyLittleShopServer {
 
     /**
-     * Sets up the server side socket and process requests from the client side
+     * Looks up the product with ID 1 in the product table. Add your code here
+     * to do stuffs.
      *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         boolean trigger = true;
+        Scanner s = new Scanner(System.in);
         Server sys = new Server();
-        //Registering the JSSE provider
+
         Security.addProvider(new Provider());
         System.setProperty("javax.net.ssl.keyStore", "MLSTrustedKS.ks");
         System.setProperty("javax.net.ssl.keyStorePassword", "2Y9AMGsU4NVjpaxb");
-        //ServerSocket listener = null;
-        SSLServerSocket listener = null;
+        ServerSocket listener = null;
+        int port = 9898;
         int clientNumber = 0;
         try {
-            //Initialize the server socket (unsafe)
-            //listener = new ServerSocket(9898);
-            //Initialize the SSL socket
             SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-            listener = (SSLServerSocket) factory.createServerSocket(9898);
+            listener = (SSLServerSocket) factory.createServerSocket(port);
         } catch (IOException e) {
             System.err.println(e);
         }
@@ -54,12 +53,9 @@ public class MyLittleShopServer {
             while (trigger) {
                 /*Create a new instance of a listener. Triggers a message
                   if a client connects
-                  SSLServerSocket only accepts the connection. The actual
-                  conversation happens on a SSLSocket that will be created on
-                  the same port
                  */
                 new Listener((SSLSocket) listener.accept(), clientNumber++, sys).start();
-                System.out.println("Client connected. Listening port 9898");
+                System.out.println("Client connected. Listening port: " + port);
             }
         } catch (IOException e) {
             System.err.println(e);
@@ -72,27 +68,13 @@ public class MyLittleShopServer {
         }
     }
 
-    /**
-     * Specifies the server behavior upon having received a client. The class is
-     * threaded so as to be able to handle many clients at once This class is
-     * private to the server so as to increase security. This is to be tested
-     */
     private static class Listener extends Thread {
 
-        private SSLSocket socket;
+        private Socket socket;
         private int clientNumber;
         private Server sys;
 
-        /**
-         * Constructor of the private class.
-         *
-         * @param socket The socket that's to be opened to handle client
-         * connection
-         * @param clientNumber The variable to count the current number of
-         * connected client
-         * @param sys The instance of the database.
-         */
-        public Listener(SSLSocket socket, int clientNumber, Server sys) {
+        public Listener(Socket socket, int clientNumber, Server sys) {
             this.socket = socket;
             this.sys = sys;
             this.clientNumber = clientNumber;
@@ -102,7 +84,18 @@ public class MyLittleShopServer {
 
         @Override
         public void run() {
-            //Scanner scanner = null;
+
+            /*try {
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+                // Send a welcome message to the client.
+                out.println("Hello, you are connected to the Little Shop."
+                        + "Connected clients: "
+                        + this.clientNumber + ".");
+                out.println("Enter a line with only a 'q' to shutdown"
+                        + " the server\n");*/
             try {
                 String username = new String();
                 boolean logInState = false;
@@ -111,7 +104,7 @@ public class MyLittleShopServer {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 // A client inputs username and password
 
-                while (!logInState) {
+                /*while (!logInState) {
                     out.println("Please enter your username: ");
                     username = in.readLine();
                     out.println("Please enter your password: ");
@@ -120,8 +113,7 @@ public class MyLittleShopServer {
                     out.println(logInState);
                 }
                 //Send the client the shopID of the client
-                out.println(sys.getUserShop(username));
-
+                out.println(sys.getUserShop(username));*/
                 // Send a welcome message to the client.
                 out.println("Hello, you are connected to the Little Shop."
                         + "Connected clients: "
@@ -134,25 +126,6 @@ public class MyLittleShopServer {
                     String input = in.readLine();
                     System.out.println("Command received: " + input);
                     switch (input) {
-                        //Service list
-                        case "getlogbydate":
-                            out.println("Specify the timeframe (year->month->day"
-                                    + " start->end) and the shopID: ");
-                            ArrayList resultLog = sys.getLogByDate(in.readLine(),
-                                    in.readLine(), in.readLine(), in.readLine(),
-                                    in.readLine(), in.readLine(), in.readLine());
-                            if (!resultLog.isEmpty()) {
-                                out.println(resultLog.size());
-                                Iterator itrLog = resultLog.iterator();
-                                while (itrLog.hasNext()) {
-                                    LogEntry entry = (LogEntry) itrLog.next();
-                                    out.println(entry.toString());
-                                }
-                            } else {
-                                String nullString = null;
-                                out.println(nullString);
-                            }
-                            break;
                         case "login":
                             out.println("Please enter your username: ");
                             username = in.readLine();
@@ -160,13 +133,16 @@ public class MyLittleShopServer {
                             String password = in.readLine();
                             logInState = sys.checkPassword(username, password);
                             out.println(logInState);
-                            //Send the client th
-                            out.println(sys.getUserShop(username));
+                            //Send the client the shopID of the client
+                            if (logInState == true){
+                                out.println(sys.getUserShop(username));
+                                System.out.println(sys.getUserShop(username));
+                            }
+                            break;
                         case "logout":
                             String signal = in.readLine();
-                            if (signal.length() > 0) {
-                                logInState = false;
-                            }
+                            if(signal.length()>0) logInState = false;
+                            break;
                         case "q":
                             sys.close();
                             System.exit(0);
@@ -174,41 +150,79 @@ public class MyLittleShopServer {
                         case "getproduct":
                             out.println("Specify the id");
                             Integer searchID = Integer.parseInt(in.readLine());
-                            try {
-                                out.println(sys.lookup(searchID).toString());
-                            } catch (NullPointerException npe) {
-                                out.println("No such product");
+                            Product result = sys.lookup(searchID);
+                            if (result != null) {
+                                String resID = Integer.toString(result.getID());
+                                String resName = result.getName();
+                                String resUnit = result.getUnit();
+                                String resPrice = Integer.toString(result.getPrice());
+                                String resultString = resID + ',' + resName + ',' + resUnit + ',' + resPrice + '\n';
+                                out.println(resultString);
+                            } else {
+                                out.println("0");
                             }
                             break;
-                        case "getallproduct":
-                            ArrayList<Product> resultProductSet = sys.lookupAll();
-                            if (!resultProductSet.isEmpty()) {
-                                out.println(resultProductSet.size());
-                                Iterator itrLog = resultProductSet.iterator();
-                                while (itrLog.hasNext()) {
-                                    Product entry = (Product) itrLog.next();
-                                    out.println(entry.toString());
-                                }
+                        case "getproductbyname":
+                            out.println("Specify the name");
+                            String searchName = in.readLine();
+                            Product resultProduct = sys.lookupByName(searchName);
+                            if (resultProduct != null) {
+                                String resID = Integer.toString(resultProduct.getID());
+                                String resName = resultProduct.getName();
+                                String resUnit = resultProduct.getUnit();
+                                String resPrice = Integer.toString(resultProduct.getPrice());
+                                String resultString = resID + ',' + resName + ',' + resUnit + ',' + resPrice + '\n';
+                                out.println(resultString);
                             } else {
-                                String nullString = null;
-                                out.println(nullString);
+                                out.println("0");
                             }
                             break;
                         case "getlog":
                             out.println("Specify the shop id");
-                            ArrayList resultLogAll = sys.log(in.readLine());
-                            if (!resultLogAll.isEmpty()) {
-                                out.println(resultLogAll.size());
-                                Iterator itrLog = resultLogAll.iterator();
+                            ArrayList resultLog = sys.log(in.readLine());
+                            //out.println(resultLog);
+                            if (!resultLog.isEmpty() && resultLog != null) {
+                                out.println(resultLog.size());
+                                Iterator itrLog = resultLog.iterator();
                                 while (itrLog.hasNext()) {
                                     LogEntry entry = (LogEntry) itrLog.next();
-                                    out.println(entry.toString());
+                                    String resLogID = Integer.toString(entry.getLogID());
+                                    String resProID = Integer.toString(entry.getProductID());
+                                    String resName = entry.getName();
+                                    String resIm = Boolean.toString(entry.isIsImport());
+                                    String resQuantity = Integer.toString(entry.getQuantity());
+                                    String resTime = entry.getTime();
+                                    String resultString = resLogID + ',' + resProID + ','  + resName + ','+ resIm + ',' + resQuantity + ',' + resTime + '\n';
+                                    out.println(resultString);
                                 }
                             } else {
-                                String nullString = null;
-                                out.println(nullString);
+                                out.println("0");
                             }
                             break;
+                        case "getlogbydate":
+                            out.println("Specify the timeframe (year->month->day"
+                                    + " start->end) and the shopID: ");
+                            ArrayList resultLogD = sys.getLogByDate(in.readLine(),
+                                    in.readLine(), in.readLine(), in.readLine(),
+                                    in.readLine(), in.readLine(), in.readLine());
+                            if (!resultLogD.isEmpty()) {
+                                out.println(resultLogD.size());
+                                Iterator itrLog = resultLogD.iterator();
+                                while (itrLog.hasNext()) {
+                                    LogEntry entry = (LogEntry) itrLog.next();
+                                    String resLogID = Integer.toString(entry.getLogID());
+                                    String resProID = Integer.toString(entry.getProductID());
+                                    String resName = entry.getName();
+                                    String resIm = Boolean.toString(entry.isIsImport());
+                                    String resQuantity = Integer.toString(entry.getQuantity());
+                                    String resTime = entry.getTime();
+                                    String resultString = resLogID + ',' + resProID + ','  + resName + ','+ resIm + ',' + resQuantity + ',' + resTime + '\n';
+                                    out.println(resultString);
+                                }
+                            } else {
+                                out.println("0");
+                            }
+                            break;    
                         case "getinventory":
                             out.println("Specify the shop id");
                             ArrayList resultInv = sys.getInventory(in.readLine());
@@ -217,11 +231,36 @@ public class MyLittleShopServer {
                                 Iterator itrInv = resultInv.iterator();
                                 while (itrInv.hasNext()) {
                                     InventoryEntry entry = (InventoryEntry) itrInv.next();
-                                    out.println(entry.toString());
+                                    String resID = Integer.toString(entry.getProduct_id());
+                                    String resName = entry.getName();
+                                    String resUnit = entry.getUnit();
+                                    String resQuantity = Integer.toString(entry.getQuantity());
+                                    String resultString = resID + ',' + resName + ',' + resUnit + ',' + resQuantity + '\n';
+                                    out.println(resultString);
+
                                 }
                             } else {
-                                String nullString = null;
-                                out.println(nullString);
+                                //String nullString = null;
+                                out.println("0");
+                            }
+                            break;
+                        case "getallproducts":
+                            ArrayList resultAll = sys.lookupAll();
+                            if (!resultAll.isEmpty()) {
+                                out.println(resultAll.size());
+                                Iterator itrProduct = resultAll.iterator();
+                                while (itrProduct.hasNext()) {
+                                    Product product = (Product) itrProduct.next();
+                                    String resID = Integer.toString(product.getID());
+                                    String resName = product.getName();
+                                    String resUnit = product.getUnit();
+                                    String resPrice = Integer.toString(product.getPrice());
+                                    String resultString = resID + ',' + resName + ',' + resUnit + ',' + resPrice + '\n';
+                                    out.println(resultString);
+                                }
+                            } else {
+                                //String nullString = null;
+                                out.println("0");
                             }
                             break;
                         case "deleteproduct":
@@ -272,5 +311,6 @@ public class MyLittleShopServer {
                 }
             }
         }
+
     }
 }

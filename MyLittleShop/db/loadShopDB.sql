@@ -1,4 +1,4 @@
- CREATE TABLE products(
+CREATE TABLE products(
 	product_ID INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
 	name VARCHAR(30) NOT NULL,
 	unit VARCHAR(12) NOT NULL,
@@ -26,11 +26,4 @@ CREATE TABLE Shop02Log(
 	time TIMESTAMP NOT NULL DEFAULT '2014-01-01 06:30:00',
 	FOREIGN KEY(product_ID) REFERENCES products(product_ID) ON DELETE CASCADE ON UPDATE RESTRICT
 );
-
-CREATE TABLE userinformation(
-        username VARCHAR(32) PRIMARY KEY NOT NULL,
-        password VARCHAR(39) NOT NULL,
-        domain VARCHAR(5) NOT NULL
-);
 	
-INSERT INTO userinformation(username,password,domain) values('manager','123','01');
