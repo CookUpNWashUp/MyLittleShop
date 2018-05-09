@@ -152,35 +152,39 @@ public class Server {
      * @return updateState Indicates if the the update was success or not
      */
     public int exportProduct(int ID, int quantity, String ShopID) {
+        int updateState = -1;
         String SQLQuery = new String("INSERT INTO shop" + ShopID + "log "
                 + "(product_id,isimport,quantity,time) "
                 + "VALUES ("
                 + ID + ",false," + quantity + ",CURRENT_TIMESTAMP)");
         //Look up the inventory of the shop
-        ArrayList<InventoryEntry> inventoryList = this.getInventory(ShopID);
-        Iterator itr = inventoryList.iterator();
-        InventoryEntry entry = new InventoryEntry(-1, "No Product", "No unit", -1);
-        while (itr.hasNext()) {
-            entry = (InventoryEntry) itr.next();
-            if (entry.getProduct_id() == ID) {
-                break;
+        try{
+            ArrayList<InventoryEntry> inventoryList = this.getInventory(ShopID);
+            Iterator itr = inventoryList.iterator();
+            InventoryEntry entry = new InventoryEntry(-1, "No Product", "No unit", -1);
+            while (itr.hasNext()) {
+                entry = (InventoryEntry) itr.next();
+                if (entry.getProduct_id() == ID) {
+                    break;
+                }
             }
+            //Compare the inventory with the product quantity
+            if (entry.getQuantity() >= quantity) {
+                //Timestamps are contant for the timebeing.
+                updateState = shopdb.update(SQLQuery);
+                return updateState;
+            } else {
+                return -1;
+            }
+        }catch(NullPointerException e){
+            updateState = -1;
         }
-        //Compare the inventory with the product quantity
-        if (entry.getQuantity() >= quantity) {
-            //Timestamps are contant for the timebeing.
-            int updateState = shopdb.update(SQLQuery);
-            return updateState;
-        } else {
-            return -1;
-        }
+        return updateState;
     }
 
     /**
      * Makes a query to the database and inquire the logging of the specified
-     * shop. After that,prints out the log. Will probably be remade to return a
-     * certain kind of object for easy integration with the GUI. Currently
-     * supports all shop. Access control will be looked into later
+     * shop. After that,prints out the log.
      *
      * @param ShopID The ID of the shop.
      * @return log An array list of log entries
@@ -217,7 +221,21 @@ public class Server {
         }
         return log;
     }
-
+    
+    /**
+     * Makes a query to the database and inquire the logging of the specified
+     * shop. After that,prints out the log. Requires a time frame specified by 
+     * a start and end date.
+     * 
+     * @param yearStart 
+     * @param monthStart
+     * @param dayStart
+     * @param yearEnd
+     * @param monthEnd
+     * @param dayEnd
+     * @param shopID The ID of the shop
+     * @return An array list of the found log entries
+     */
     public ArrayList<LogEntry> getLogByDate(String yearStart, String monthStart, String dayStart,
             String yearEnd, String monthEnd, String dayEnd, String shopID) {
         while (monthStart.length() < 2) {
@@ -461,7 +479,13 @@ public class Server {
         updateState = shopdb.update(SQLQuery);
         return updateState;
     }
-
+    
+    /**
+     * Checks the database for the user's username and password pair.
+     * @param username
+     * @param password
+     * @return The log in state of the user
+     */
     public boolean checkPassword(String username, String password) {
         boolean logInState = false;
         String digestedPassword = password;
@@ -491,7 +515,12 @@ public class Server {
         }
         return logInState;
     }
-
+    
+    /**
+     * Fetch the user's registered domain upon logging in
+     * @param username
+     * @return The user's domain
+     */
     public String getUserShop(String username) {
         String SQLQuery = "SELECT domain FROM userinformation WHERE username="
                 + "'" + username + "'";

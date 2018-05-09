@@ -38,7 +38,7 @@ public class MyLittleShopClient {
         // Get the server address from a dialog box.
         String serverAddress = "localhost";
         Security.addProvider(new Provider());
-        System.setProperty("javax.net.ssl.trustStore", "MLSTrustedKS.ks");
+        System.setProperty("javax.net.ssl.trustStore", "vault/client/MLSTrustedKS.ks");
         System.setProperty("javax.net.ssl.trustStorePassword", "2Y9AMGsU4NVjpaxb");
         // Make connection
         //Socket socket = new Socket(serverAddress, 9898);

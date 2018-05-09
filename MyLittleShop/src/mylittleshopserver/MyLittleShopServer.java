@@ -8,13 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.BindException;
 import java.util.*;
-import java.sql.*;
-import java.net.ServerSocket;
-import java.net.Socket;
 import javax.net.ssl.*;
-import com.sun.net.ssl.*;
 import com.sun.net.ssl.internal.ssl.Provider;
 import java.security.Security;
 
@@ -35,15 +30,12 @@ public class MyLittleShopServer {
         Server sys = new Server();
         //Registering the JSSE provider
         Security.addProvider(new Provider());
-        System.setProperty("javax.net.ssl.keyStore", "MLSTrustedKS.ks");
+        System.setProperty("javax.net.ssl.keyStore", "vault/server/MLSServerKS.ks");
         System.setProperty("javax.net.ssl.keyStorePassword", "2Y9AMGsU4NVjpaxb");
-        //ServerSocket listener = null;
         SSLServerSocket listener = null;
         int clientNumber = 0;
         try {
-            //Initialize the server socket (unsafe)
-            //listener = new ServerSocket(9898);
-            //Initialize the SSL socket
+            //Create a SSL socket
             SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
             listener = (SSLServerSocket) factory.createServerSocket(9898);
         } catch (IOException e) {

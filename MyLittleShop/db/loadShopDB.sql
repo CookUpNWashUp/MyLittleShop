@@ -1,8 +1,8 @@
  CREATE TABLE products(
 	product_ID INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
-	name VARCHAR(30) NOT NULL,
+	name VARCHAR(30) NOT NULL UNIQUE,
 	unit VARCHAR(12) NOT NULL,
-	price INTEGER NOT NULL	
+	price INTEGER NOT NULL
 );
 
 /*The table specifies the incoming and outgoing products at shop 1
