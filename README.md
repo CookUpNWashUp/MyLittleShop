@@ -14,6 +14,8 @@ Shop logs' structure changed (Have import time/ export time removed and replaced
 
 - v1.4 - v1.4.1: getlogbydate, timestamps in general implemented. LogEntry tweaked. More exceptions handled (export, UNIQUE name field for products). Restructured the keystores in the vault file.
 
+- v1.4.2: Forgot to update the log. GUI implemented. Keystores have not yet been seperated as that in 1.4.1 since this was forked from 1.3 initially and worked on offline by Ha. Exception handling has been done on this version as well.
+
 ## Set Up Instructions
 
 1. Set up a database on your system or IDE. The default database name is ```shopdb``` and credential is ```root``` and ```root``` for username and password. The default port for the database is ```1527```. You can set the name of the database and credentials differently to what's provided here, but be sure to modify the URL in the ```Database```class and the credentials in the ```Server``` class accordingly.
