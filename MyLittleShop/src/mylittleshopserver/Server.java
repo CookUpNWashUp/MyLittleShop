@@ -418,9 +418,9 @@ public class Server {
         "product_ID INTEGER,\n" +
         "isImport BOOLEAN NOT NULL,\n" +
         "quantity INTEGER NOT NULL,\n" +
-        "time TIMESTAMP NOT NULL DEFAULT '2014-01-01 06:30:00',\n" +
+        "time TIMESTAMP NOT NULL DEFAULT '1980-01-01 06:30:00',\n" +
         "FOREIGN KEY(product_ID) REFERENCES products(product_ID) "
-                + "ON DELETE CASCADE ON UPDATE RESTRICT\n" +
+                + "ON DELETE RESTRICT ON UPDATE RESTRICT\n" +
         ")";
         int updateState = shopdb.update(SQLQuery);
         //Initialize the newly added shop with the products
