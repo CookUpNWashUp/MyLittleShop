@@ -1,0 +1,34 @@
+-Deployment issues: Server should be on the same domain as the database since connection is  clear text. Else snooping is possible
+Impact Critical
+Probability low
+Mitigation: Implement SSL connection between Server and Database
+
+-Scalability: Server has low scalability due to RPC and threaded design. Can't support a large database with millions of records
+Impact: High 
+Probability low
+Mitigation: None
+
+-Deadline: Process model doesn't allow for large last minute changes.
+Impact: High
+Probability medium
+Mitigation: Ask for extenstion 
+
+-Sudden cancellation
+Impact: High
+Probability medium
+Mitigation: none. Achive the project and reuse if possible.
+
+-DDOS: Especially a concern, since the design is centered around a server. Errecting more servers will result in a unsynchronized infrastructure. 
+Impact: High
+Prob: medium
+Mitigation: Improve the infrastructure by adding UTMs, caching DNS, subscribe to 3rd party DDOS protection services.
+
+-Sudden resignation of a large amount of employees
+Impact: High
+Prob: Low
+Mitigation: renegotiate the terms of the contract: deliver less features.
+
+-Sudden change or discovery of requirements near deadline
+Impact: High
+Prob: High
+Mitigation: Accept (Try and negotiate the deadline or terms. Process model doesn't support this).
