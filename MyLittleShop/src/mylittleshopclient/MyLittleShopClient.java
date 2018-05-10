@@ -56,33 +56,7 @@ public class MyLittleShopClient {
         SSLSocket socket = (SSLSocket) sslsocketfactory.createSocket(serverAddress, port);
         socket.startHandshake();
         return socket;
-        //        in = new BufferedReader(
-        //                new InputStreamReader(socket.getInputStream()));
-        //        out = new PrintWriter(socket.getOutputStream(), true);
-        //
-        //        // Consume the initial welcoming messages from the server
-        //        for (int i = 0; i < 3;  i++) {
-        //           System.out.println(in.readLine() + "\n");
-        //        }
-        //        //Send a string to the server
-        //        Scanner scan = new Scanner(System.in);
-        //        while(true){
-        //            String message = scan.nextLine();
-        //            out.println(message);
-        //            if (message.equals("q")){
-        //                System.exit(0);
-        //            }else if (message.equals("getproduct")){
-        //                System.out.println(in.readLine() + "\n");
-        //                out.println(scan.nextLine());
-        //                System.out.println(in.readLine() + "\n");
-        //            }else if (message.equals("getlog")|| message.equals("getinventory")){
-        //                System.out.println(in.readLine() + "\n");
-        //                out.println(scan.nextLine());
-        //                int size = Integer.parseInt(in.readLine());
-        //                for (int i=0;i<size;i++)
-        //                    System.out.println(in.readLine() + "\n");
-        //            }
-        //        }
+       
     }
 
     /**
@@ -97,9 +71,7 @@ public class MyLittleShopClient {
         } catch (IOException e) {
             System.err.println("Server offline");
         }
-        /*while(true){
-            client.communicate();
-        }*/
+     
 
     }
 

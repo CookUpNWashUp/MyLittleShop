@@ -49,6 +49,9 @@ public class Server {
             }
         }catch (SQLException e){
             System.err.println("SQLException: lookup failed");
+        
+        }catch (NumberFormatException e){
+                   
         }finally{
             if (data != null){
                 try{
@@ -137,8 +140,15 @@ public class Server {
                 + ID + ",true," + quantity + ",CURRENT_TIMESTAMP)");
         //System.out.println(SQLQuery);
         //Timestamps are contant for the timebeing.
+        try{
         int updateState = shopdb.update(SQLQuery);
         return updateState;
+        }catch (NullPointerException e){
+            return -1;
+        }
+        catch (NumberFormatException e){
+             return -1; 
+        }
     }
     
     /**
@@ -174,6 +184,10 @@ public class Server {
         }catch (NullPointerException e){
             updateState = -1;
         }
+        catch (NumberFormatException e){
+                    updateState = -1;
+        }
+        
     return updateState;
 }
     
@@ -400,9 +414,17 @@ public class Server {
      * @return updateState Indicates if the operation is successful
      */
     public int deleteProduct(int id){
+       try{
         String SQLQuery = "DELETE FROM products WHERE product_id = "+id;
         int updateState = shopdb.update(SQLQuery);
         return updateState;
+       }catch (NullPointerException e){
+            return -1;
+        }
+        catch (NumberFormatException e){
+             return -1;
+        }
+       
     }
     
     /**
@@ -436,18 +458,7 @@ public class Server {
     public boolean checkPassword(String username, String password) {
         boolean logInState = false;
         String digestedPassword = password;
-                //+"0x4B98C701E9C8FE347564F090DD6809843492880C";
-        /*try{
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(digestedPassword.getBytes());
-            byte[] digestedBytes = md.digest();
-            BigInteger number = new BigInteger(1, digestedBytes);
-            digestedPassword = number.toString();
-            System.out.println(digestedPassword.length());
-            System.out.println(digestedPassword);
-        }catch (NoSuchAlgorithmException e){
-            System.err.println("Can't use hash algorithm");
-        }*/
+               
         String SQLQuery = "SELECT username, password FROM USERINFORMATION WHERE"
                 + " username ='" + username + "'AND password ='" + digestedPassword + "'";
         ResultSet data = shopdb.query(SQLQuery);

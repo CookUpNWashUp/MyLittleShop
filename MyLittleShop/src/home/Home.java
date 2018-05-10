@@ -482,8 +482,7 @@ public class Home extends javax.swing.JFrame {
 
         jTable1.setBackground(new java.awt.Color(255, 255, 204));
         jTable1.setGridColor(new java.awt.Color(204, 255, 204));
-        jTable1.setSelectionBackground(new java.awt.Color(255, 255, 102));
-        jTable1.setSelectionForeground(new java.awt.Color(204, 255, 204));
+        jTable1.setSelectionBackground(new java.awt.Color(204, 204, 255));
         jScrollPane1.setViewportView(jTable1);
 
         jSearch1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -521,19 +520,19 @@ public class Home extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Enter the Shop ID :");
 
-        datefield.setEditable(true);
         datefield.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
+        datefield.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                datefieldActionPerformed(evt);
+            }
+        });
 
-        monthfield.setEditable(true);
         monthfield.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
 
         yearfield.setName(""); // NOI18N
 
-        datefield1.setEditable(true);
         datefield1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
-        datefield1.setMinimumSize(new java.awt.Dimension(37, 20));
 
-        monthfield1.setEditable(true);
         monthfield1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
 
         yearfield1.addActionListener(new java.awt.event.ActionListener() {
@@ -653,7 +652,7 @@ public class Home extends javax.swing.JFrame {
         shop1.setLayout(shop1Layout);
         shop1Layout.setHorizontalGroup(
             shop1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1066, Short.MAX_VALUE)
         );
         shop1Layout.setVerticalGroup(
             shop1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -673,6 +672,7 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
+        jTable4.setBackground(new java.awt.Color(255, 255, 204));
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -681,6 +681,7 @@ public class Home extends javax.swing.JFrame {
 
             }
         ));
+        jTable4.setSelectionBackground(new java.awt.Color(204, 204, 255));
         jScrollPane4.setViewportView(jTable4);
 
         jHome_SaleRP.setText("Log out");
@@ -755,7 +756,7 @@ public class Home extends javax.swing.JFrame {
         jLabel23.setText("Scan Barcode");
 
         jrefresh.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jrefresh.setText("Refresh ");
+        jrefresh.setText("Refresh Table ");
         jrefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jrefreshActionPerformed(evt);
@@ -772,6 +773,8 @@ public class Home extends javax.swing.JFrame {
 
         jLabel29.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel29.setText("Shop ID :");
+
+        defineshopField.setEnabled(false);
 
         javax.swing.GroupLayout DeleteFieldLayout = new javax.swing.GroupLayout(DeleteField);
         DeleteField.setLayout(DeleteFieldLayout);
@@ -1116,10 +1119,10 @@ public class Home extends javax.swing.JFrame {
         jLabel24.setText("Modify My Little Shop");
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel5.setText("Name of the shop :");
+        jLabel5.setText("ID of the shop :");
 
         jLabel26.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel26.setText("Name of the shop :");
+        jLabel26.setText("ID of the shop :");
 
         jLabel27.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel27.setText("Add Shop");
@@ -1282,7 +1285,7 @@ public class Home extends javax.swing.JFrame {
                     login.hide();
                 }
                 else{
-                    JOptionPane.showMessageDialog(null,"Invalid Input Details","Notification",JOptionPane.ERROR_MESSAGE );
+                    JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
                     jtxtUserName.setText(null);
                     jPassword.setText(null);
                 }
@@ -1290,7 +1293,7 @@ public class Home extends javax.swing.JFrame {
                 
             }
         }
-        else {JOptionPane.showMessageDialog(null,"Invalid Input Details","Notification",JOptionPane.ERROR_MESSAGE );}   
+        else {JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );}   
         
     }//GEN-LAST:event_jLoginActionPerformed
 
@@ -1329,7 +1332,7 @@ public class Home extends javax.swing.JFrame {
                 }
             } 
             else {
-            JOptionPane.showMessageDialog(null,"No Details Found","No information",JOptionPane.ERROR_MESSAGE );
+            JOptionPane.showMessageDialog(null,"No details found \n You have to add the new products","No information",JOptionPane.ERROR_MESSAGE );
             SearchField.setText(null);
             }
         } catch (Exception e) {}
@@ -1372,7 +1375,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jHome_SaleRPActionPerformed
 
     private void jAdd_modi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAdd_modi1ActionPerformed
-        if((!adnamefield.getText().equals(""))&&(!adunitfield.getText().equals(""))&&(!adpricefield.getText().equals(""))){
+        if((!adnamefield.getText().equals(""))&&(!adunitfield.getText().equals(""))&&(adpricefield.getText().matches("^\\d+(\\.\\d+)?"))){
         String command = "addproduct";
         out.println(command);
         try {
@@ -1384,13 +1387,22 @@ public class Home extends javax.swing.JFrame {
             out.println(unit);
             out.println(price);
         String result = in.readLine();
-        JOptionPane.showMessageDialog(null,"Successfully Adding","Notification",JOptionPane.PLAIN_MESSAGE );
+        JOptionPane.showMessageDialog(null,"Successfully adding","Notification",JOptionPane.PLAIN_MESSAGE );
         adnamefield.setText(null);
         adunitfield.setText(null);
         adpricefield.setText(null);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Invalid input details \n Notice that the price is integer","Notification",JOptionPane.ERROR_MESSAGE );
+            adnamefield.setText(null);
+            adunitfield.setText(null);
+            adpricefield.setText(null);
         }
-        else {JOptionPane.showMessageDialog(null,"Invalid Input Details","Notification",JOptionPane.ERROR_MESSAGE );}
+        }
+        else {JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
+            adnamefield.setText(null);
+            adunitfield.setText(null);
+            adpricefield.setText(null);
+        }
     }//GEN-LAST:event_jAdd_modi1ActionPerformed
 
     private void jDone1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDone1ActionPerformed
@@ -1489,7 +1501,7 @@ public class Home extends javax.swing.JFrame {
                 } 
                 else {
                 JOptionPane.showMessageDialog(null,"No records found or \n Shop ID does not exist","Notification",JOptionPane.ERROR_MESSAGE );
-                SearchField.setText(null);
+                shopIDfield.setText(null);
                 }
             } catch (Exception e) {
                     //JOptionPane.showMessageDialog(null,"No records found","Notification",JOptionPane.ERROR_MESSAGE );
@@ -1498,7 +1510,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jgetInActionPerformed
 
     private void jImport_modi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jImport_modi1ActionPerformed
-        if((!ImproIDfield.getText().equals(""))&&(!ImshopIDfield.getText().equals(""))&&(!Imquantityfield.getValue().equals(""))){
+        if((ImproIDfield.getText().matches("^\\d+(\\.\\d+)?"))&&(ImshopIDfield.getText().matches("^\\d+(\\.\\d+)?"))&&(!Imquantityfield.getValue().equals(""))){
         String command = "import";
         out.println(command);
         try {
@@ -1518,13 +1530,22 @@ public class Home extends javax.swing.JFrame {
                 ImshopIDfield.setText(null);
              }
             else{
-        JOptionPane.showMessageDialog(null,"Successfully Import","Notification",JOptionPane.PLAIN_MESSAGE );
+        JOptionPane.showMessageDialog(null,"Successfully importing","Notification",JOptionPane.PLAIN_MESSAGE );
         ImproIDfield.setText(null);
         Imquantityfield.setValue(0);
         ImshopIDfield.setText(null);}
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Invalid input details !!!","Notification",JOptionPane.ERROR_MESSAGE );
+            ImproIDfield.setText(null);
+            Imquantityfield.setValue(0);
+            ImshopIDfield.setText(null);
         }
-        else {JOptionPane.showMessageDialog(null,"Invalid Input Details","Notification",JOptionPane.ERROR_MESSAGE );}
+        }
+        else {JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
+            ImproIDfield.setText(null);
+            Imquantityfield.setValue(0);
+            ImshopIDfield.setText(null);
+        }
     }//GEN-LAST:event_jImport_modi1ActionPerformed
 
     private void jgetlogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jgetlogActionPerformed
@@ -1551,7 +1572,7 @@ public class Home extends javax.swing.JFrame {
                     for(int i=0; i<tableline; i++){
                     String result = in.readLine();
                     String[] dataRow = result.split(",");
-                    String[] columnsName = {"Log_ID","Product_ID","Product Name","Import?","Quantity","Time"};
+                    String[] columnsName = {"Log_ID","Product_ID","Product Name","Import? Export?","Quantity","Time"};
                     //table.setRowCount(0);
                     table.setColumnIdentifiers(columnsName);
                     table.addRow(dataRow);
@@ -1589,7 +1610,7 @@ public class Home extends javax.swing.JFrame {
                     for(int i=0; i<tableline; i++){
                     String result = in.readLine();
                     String[] dataRow = result.split(",");
-                    String[] columnsName = {"Log_ID","Product_ID","Product Name","Import?","Quantity","Time"};
+                    String[] columnsName = {"Log_ID","Product_ID","Product Name","Import? Export?","Quantity","Time"};
                     //table.setRowCount(0);
                     table.setColumnIdentifiers(columnsName);
                     table.addRow(dataRow);
@@ -1597,7 +1618,7 @@ public class Home extends javax.swing.JFrame {
                     }
                 } 
                 else {
-                JOptionPane.showMessageDialog(null,"Invalid Input Details \n Or no records found","Notification",JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog(null,"Invalid input details \n Or no records found","Notification",JOptionPane.ERROR_MESSAGE );
                 SearchField.setText(null);
                 }
             } catch (Exception ex) {
@@ -1606,7 +1627,7 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jgetlogActionPerformed
 
     private void jExport_modi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jExport_modi1ActionPerformed
-       if((!ExproIDfield.getText().equals(""))&&(!ExshopIDfield.getText().equals(""))&&(!Exquantityfield.getValue().equals(""))){
+       if((ExproIDfield.getText().matches("^\\d+(\\.\\d+)?"))&&(ExshopIDfield.getText().matches("^\\d+(\\.\\d+)?"))&&(!Exquantityfield.getValue().equals(""))){
         String command = "export";
         out.println(command);
         try {
@@ -1626,17 +1647,26 @@ public class Home extends javax.swing.JFrame {
                 ExshopIDfield.setText(null);
              }
             else{
-                JOptionPane.showMessageDialog(null,"Successfully Export","Notification",JOptionPane.PLAIN_MESSAGE );
+                JOptionPane.showMessageDialog(null,"Successfully exporting","Notification",JOptionPane.PLAIN_MESSAGE );
                 ExproIDfield.setText(null);
                 Exquantityfield.setValue(0);
                 ExshopIDfield.setText(null);}
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Invalid input details !!!","Notification",JOptionPane.ERROR_MESSAGE );
+            ExproIDfield.setText(null);
+            Exquantityfield.setValue(0);
+            ExshopIDfield.setText(null);
         }
-        else {JOptionPane.showMessageDialog(null,"Invalid Input Details","Notification",JOptionPane.ERROR_MESSAGE );}
+        }
+        else {JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
+            ExproIDfield.setText(null);
+            Exquantityfield.setValue(0);
+            ExshopIDfield.setText(null);
+       }
     }//GEN-LAST:event_jExport_modi1ActionPerformed
 
     private void jDel_modi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDel_modi1ActionPerformed
-       if(!DelField.getText().equals("")){
+       if(DelField.getText().matches("^\\d+(\\.\\d+)?")){
         String command = "deleteproduct";
         out.println(command);
         try {
@@ -1645,18 +1675,21 @@ public class Home extends javax.swing.JFrame {
             out.println(productID);
             String result = in.readLine();
             if (Integer.parseInt(result)== -1 ){
-                JOptionPane.showMessageDialog(null,"This product ID does not exists","Notification",JOptionPane.ERROR_MESSAGE );
+                JOptionPane.showMessageDialog(null,"You need the database administrator's permission to delete the product","Notification",JOptionPane.ERROR_MESSAGE );
                 DelField.setText(null);
             }
             else{
                 
-                JOptionPane.showMessageDialog(null,"Successfully Delete","Notification",JOptionPane.PLAIN_MESSAGE );
+                JOptionPane.showMessageDialog(null,"The product id does not exist","Notification",JOptionPane.PLAIN_MESSAGE );
                 DelField.setText(null);}
         } catch (Exception e) {
-            
+            JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
+            DelField.setText(null);
         }
        }
-       else {JOptionPane.showMessageDialog(null,"Invalid Input Details","Notification",JOptionPane.ERROR_MESSAGE );}
+       else {JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
+            DelField.setText(null);
+       }
     }//GEN-LAST:event_jDel_modi1ActionPerformed
 
     private void jStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStartActionPerformed
@@ -1728,47 +1761,60 @@ public class Home extends javax.swing.JFrame {
                 else {
                 JOptionPane.showMessageDialog(null,"Barcode does not exist","No information",JOptionPane.ERROR_MESSAGE );
             }   
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,"Barcode cannot be recognized","Notification",JOptionPane.ERROR_MESSAGE );
+            }
             
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Barcode cannot be recognized","Notification",JOptionPane.ERROR_MESSAGE );
         }
     }//GEN-LAST:event_jDecodeActionPerformed
 
     private void jEnter1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jEnter1ActionPerformed
-        if(!EnterField.getText().equals("")){
+        if(EnterField.getText().matches("^\\d+(\\.\\d+)?")){
         String command = "getproduct";
         out.println(command);
         try {
             in.readLine();
         } catch (Exception e) {}
+        
         int productID = Integer.parseInt(EnterField.getText());
-        out.println(productID);
-        DefaultTableModel table;
-        try {
-            String result = in.readLine();
-            if (!result.equalsIgnoreCase("0")) {
-                table = (DefaultTableModel)jTable4.getModel();
-                String[] dataRow = result.split(",");
-                String[] columnsName = {"Product_ID","Name","Unit","Price"};
-                //table.setRowCount(0);
-                table.setColumnIdentifiers(columnsName);
-                table.addRow(dataRow);
-                in.readLine();
+        
+        
+            out.println(productID);
+            DefaultTableModel table;
+            try {
+                String result = in.readLine();
+                if (!result.equalsIgnoreCase("0")) {
+                    table = (DefaultTableModel)jTable4.getModel();
+                    String[] dataRow = result.split(",");
+                    String[] columnsName = {"Product_ID","Name","Unit","Price"};
+                    //table.setRowCount(0);
+                    table.setColumnIdentifiers(columnsName);
+                    table.addRow(dataRow);
+                    in.readLine();
+                    EnterField.setText(null);
+
+                    //update price
+                        //System.out.println(dataRow[3]);
+                        int pre_price = Integer.parseInt(dataRow[3]);
+                        totalprice += pre_price;
+                        String sum = Integer.toString(totalprice);
+                        totalField.setText(sum);
+                        defineshopField.setText(userShopID);  
+                } 
+                else {
+                JOptionPane.showMessageDialog(null,"This product ID does not exist","No information",JOptionPane.ERROR_MESSAGE );
                 EnterField.setText(null);
-                
-                //update price
-                    //System.out.println(dataRow[3]);
-                    int pre_price = Integer.parseInt(dataRow[3]);
-                    totalprice += pre_price;
-                    String sum = Integer.toString(totalprice);
-                    totalField.setText(sum);
-                    defineshopField.setText(userShopID);  
-            } 
-            else {
-            JOptionPane.showMessageDialog(null,"This product ID does not exist","No information",JOptionPane.ERROR_MESSAGE );
-            EnterField.setText(null);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,"Invalid input details","Notification",JOptionPane.ERROR_MESSAGE );
+                EnterField.setText(null);
             }
-        } catch (Exception e) {}
+        }
+        else {
+             JOptionPane.showMessageDialog(null,"The product ID must be integer","No information",JOptionPane.ERROR_MESSAGE );
+                EnterField.setText(null);
         }
     }//GEN-LAST:event_jEnter1ActionPerformed
 
@@ -1856,7 +1902,9 @@ public class Home extends javax.swing.JFrame {
              }
              else{JOptionPane.showMessageDialog(null,"Successfully Adding","Notification",JOptionPane.PLAIN_MESSAGE );
             AdShopField.setText(null);}
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"This shop name is already exist","Notification",JOptionPane.ERROR_MESSAGE );
+        }
         }
     }//GEN-LAST:event_jAdShopActionPerformed
 
@@ -1878,6 +1926,10 @@ public class Home extends javax.swing.JFrame {
     private void yearfield1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yearfield1ActionPerformed
         
     }//GEN-LAST:event_yearfield1ActionPerformed
+
+    private void datefieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_datefieldActionPerformed
+       
+    }//GEN-LAST:event_datefieldActionPerformed
 
     /**
      * @param args the command line arguments

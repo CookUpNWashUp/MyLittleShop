@@ -81,17 +81,6 @@ public class MyLittleShopServer {
         @Override
         public void run() {
 
-            /*try {
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-                // Send a welcome message to the client.
-                out.println("Hello, you are connected to the Little Shop."
-                        + "Connected clients: "
-                        + this.clientNumber + ".");
-                out.println("Enter a line with only a 'q' to shutdown"
-                        + " the server\n");*/
             try {
                 String username = new String();
                 boolean logInState = false;
@@ -100,17 +89,7 @@ public class MyLittleShopServer {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 // A client inputs username and password
 
-                /*while (!logInState) {
-                    out.println("Please enter your username: ");
-                    username = in.readLine();
-                    out.println("Please enter your password: ");
-                    String password = in.readLine();
-                    logInState = sys.checkPassword(username, password);
-                    out.println(logInState);
-                }
-                //Send the client the shopID of the client
-                out.println(sys.getUserShop(username));*/
-                // Send a welcome message to the client.
+              
                 out.println("Hello, you are connected to the Little Shop."
                         + "Connected clients: "
                         + this.clientNumber + ".");
@@ -186,9 +165,12 @@ public class MyLittleShopServer {
                                     String resProID = Integer.toString(entry.getProductID());
                                     String resName = entry.getName();
                                     String resIm = Boolean.toString(entry.isIsImport());
+                                    String resImport;
+                                    if(resIm.equals("true")) resImport = "Import";
+                                    else resImport = "Export";
                                     String resQuantity = Integer.toString(entry.getQuantity());
                                     String resTime = entry.getTime();
-                                    String resultString = resLogID + ',' + resProID + ','  + resName + ','+ resIm + ',' + resQuantity + ',' + resTime + '\n';
+                                    String resultString = resLogID + ',' + resProID + ','  + resName + ','+ resImport + ',' + resQuantity + ',' + resTime + '\n';
                                     out.println(resultString);
                                 }
                             } else {
@@ -210,9 +192,12 @@ public class MyLittleShopServer {
                                     String resProID = Integer.toString(entry.getProductID());
                                     String resName = entry.getName();
                                     String resIm = Boolean.toString(entry.isIsImport());
+                                    String resImport;
+                                    if(resIm.equals("true")) resImport = "Import";
+                                    else resImport = "Export";
                                     String resQuantity = Integer.toString(entry.getQuantity());
                                     String resTime = entry.getTime();
-                                    String resultString = resLogID + ',' + resProID + ','  + resName + ','+ resIm + ',' + resQuantity + ',' + resTime + '\n';
+                                    String resultString = resLogID + ',' + resProID + ','  + resName + ','+ resImport + ',' + resQuantity + ',' + resTime + '\n';
                                     out.println(resultString);
                                 }
                             } else {
