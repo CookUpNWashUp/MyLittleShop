@@ -1,8 +1,8 @@
-CREATE TABLE products(
+ CREATE TABLE products(
 	product_ID INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
-	name VARCHAR(30) NOT NULL,
+	name VARCHAR(30) NOT NULL UNIQUE,
 	unit VARCHAR(12) NOT NULL,
-	price INTEGER NOT NULL	
+	price INTEGER NOT NULL
 );
 
 /*The table specifies the incoming and outgoing products at shop 1
@@ -26,4 +26,11 @@ CREATE TABLE Shop02Log(
 	time TIMESTAMP NOT NULL DEFAULT '2014-01-01 06:30:00',
 	FOREIGN KEY(product_ID) REFERENCES products(product_ID) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+
+CREATE TABLE userinformation(
+        username VARCHAR(32) PRIMARY KEY NOT NULL,
+        password VARCHAR(39) NOT NULL,
+        domain VARCHAR(5) NOT NULL
+);
 	
+INSERT INTO userinformation(username,password,domain) values('manager','123','01');

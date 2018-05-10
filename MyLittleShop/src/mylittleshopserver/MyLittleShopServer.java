@@ -8,13 +8,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.BindException;
 import java.util.*;
-import java.sql.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.net.ssl.*;
-import com.sun.net.ssl.*;
 import com.sun.net.ssl.internal.ssl.Provider;
 import java.security.Security;
 
@@ -33,11 +30,10 @@ public class MyLittleShopServer {
      */
     public static void main(String[] args) {
         boolean trigger = true;
-        Scanner s = new Scanner(System.in);
         Server sys = new Server();
 
         Security.addProvider(new Provider());
-        System.setProperty("javax.net.ssl.keyStore", "MLSTrustedKS.ks");
+        System.setProperty("javax.net.ssl.keyStore", "vault/server/MLSServerKS.ks");
         System.setProperty("javax.net.ssl.keyStorePassword", "2Y9AMGsU4NVjpaxb");
         ServerSocket listener = null;
         int port = 9898;

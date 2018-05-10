@@ -49,7 +49,7 @@ public class MyLittleShopClient {
         String serverAddress = "localhost";
         int port = 9898;
         Security.addProvider(new Provider());
-        System.setProperty("javax.net.ssl.trustStore", "MLSTrustedKS.ks");
+        System.setProperty("javax.net.ssl.trustStore", "vault/client/MLSTrustedKS.ks");
         System.setProperty("javax.net.ssl.trustStorePassword", "2Y9AMGsU4NVjpaxb");
 
         // Make connection and initialize streams
