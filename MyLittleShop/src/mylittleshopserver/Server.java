@@ -134,7 +134,7 @@ public class Server {
         String SQLQuery = new String("INSERT INTO shop"+ShopID+"log "
                 + "(product_id,isimport,quantity,time) "
                 + "VALUES ("
-                + ID + ",true," + quantity + ",'2014-01-01 06:30:00')");
+                + ID + ",true," + quantity + ",CURRENT_TIMESTAMP)");
         //System.out.println(SQLQuery);
         //Timestamps are contant for the timebeing.
         int updateState = shopdb.update(SQLQuery);
@@ -153,8 +153,9 @@ public class Server {
         String SQLQuery = new String("INSERT INTO shop" + ShopID + "log "
                 + "(product_id,isimport,quantity,time) "
                 + "VALUES ("
-                + ID + ",false," + quantity + ",'2014-01-01 06:30:00')");
+                + ID + ",false," + quantity + ",CURRENT_TIMESTAMP)");
         //Look up the inventory of the shop
+        
         try{
         ArrayList<InventoryEntry> inventoryList = this.getInventory(ShopID);
         Iterator itr = inventoryList.iterator();
@@ -365,8 +366,8 @@ public class Server {
      * @return updateState Indicates if the operation is successful
      */
     public int addProduct(String name, String unit, int price){
-        String SQLQuery = "INSERT INTO products(name,unit,price) VALUES('"
-                + name+"','"+unit+"',"+price+ ")";
+        String SQLQuery = "INSERT INTO products(name,unit,price,time) VALUES('"
+                + name+"','"+unit+"',"+price+ ",CURRENT_TIMESTAMP)";
         int updateState = shopdb.update(SQLQuery);
         //Must initialize all shop logs with the new product to ensure the 
         //inventory function returns a value that's not null
@@ -378,11 +379,11 @@ public class Server {
             String SQLImportInit ="INSERT INTO "+entry
                 + " (product_id,isimport,quantity,time) "
                 + "VALUES ("
-                + newProduct.getID()+ ",true," + 0 + ",'2014-01-01 06:30:00')";
+                + newProduct.getID()+ ",true," + 0 + ",'1980-01-01 06:30:00')";
             String SQLExportInit ="INSERT INTO "+entry
                 + " (product_id,isimport,quantity,time) "
                 + "VALUES ("
-                + newProduct.getID()+ ",false," + 0 + ",'2014-01-01 06:30:00')";
+                + newProduct.getID()+ ",false," + 0 + ",'1980-01-01 06:30:00')";
             updateState = shopdb.update(SQLImportInit);
             updateState = shopdb.update(SQLExportInit);
             }
@@ -394,7 +395,7 @@ public class Server {
     /**
      * Delete a product from the product table
      * The delete option has been set to cascade on the database so doing this
-     * will delete all log entries concerning the product
+     * will NOT delete all log entries concerning the product
      * @param id
      * @return updateState Indicates if the operation is successful
      */
