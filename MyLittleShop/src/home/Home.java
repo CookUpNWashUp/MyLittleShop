@@ -1978,6 +1978,7 @@ public class Home extends javax.swing.JFrame {
                     } 
                 }
                 catch (Exception e){
+                    System.err.println(e);
                     System.out.println("Cannot connect!");
                 }
             }

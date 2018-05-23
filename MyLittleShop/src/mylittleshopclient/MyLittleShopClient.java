@@ -45,8 +45,8 @@ public class MyLittleShopClient {
     public Socket connectToServer() throws UnknownHostException, IOException {
 
         // Get the server address from a dialog box.
-        String serverAddress = "localhost";
-        int port = 9898;
+        String serverAddress = "mylittleserver.myddns.me";
+        int port = 25565;
         Security.addProvider(new Provider());
         System.setProperty("javax.net.ssl.trustStore", "vault/client/MLSTrustedKS.ks");
         System.setProperty("javax.net.ssl.trustStorePassword", "2Y9AMGsU4NVjpaxb");
@@ -69,6 +69,7 @@ public class MyLittleShopClient {
             client.connectToServer();
             System.out.println("Connected");
         } catch (IOException e) {
+            System.err.println(e);
             System.err.println("Server offline");
         }
      

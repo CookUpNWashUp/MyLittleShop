@@ -36,7 +36,7 @@ public class MyLittleShopServer {
         System.setProperty("javax.net.ssl.keyStore", "vault/server/MLSServerKS.ks");
         System.setProperty("javax.net.ssl.keyStorePassword", "2Y9AMGsU4NVjpaxb");
         ServerSocket listener = null;
-        int port = 9898;
+        int port = 25565;
         int clientNumber = 0;
         try {
             SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
